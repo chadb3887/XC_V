@@ -128,8 +128,6 @@ if ($rUserInfo) {
 	$rDownloading = true;
 
 	if (CoreUtilities::startDownload('playlist', $rUserInfo, getmypid())) {
-		$db = new DatabaseHandler($_INFO['username'], $_INFO['password'], $_INFO['database'], $_INFO['hostname'], $_INFO['port']);
-		CoreUtilities::$db = &$db;
 		$rProxyIP = ($_SERVER['HTTP_X_IP'] ?? ($_SERVER['REMOTE_ADDR'] ?? ''));
 
 		if (!CoreUtilities::generatePlaylist($rUserInfo, $rDeviceKey, $rOutputKey, $rTypeKey, $rNoCache, CoreUtilities::isProxy($rProxyIP))) {

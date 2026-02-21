@@ -392,8 +392,17 @@ class CoreUtilities {
 						} else {
 							if (self::$rCached) {
 								foreach ($rUserInfo['series_ids'] as $rSeriesID) {
-									$rSeriesInfo[$rSeriesID] = igbinary_unserialize(file_get_contents(SERIES_TMP_PATH . 'series_' . intval($rSeriesID)));
-									$rSeriesData = igbinary_unserialize(file_get_contents(SERIES_TMP_PATH . 'episodes_' . intval($rSeriesID)));
+									$rSeriesID = intval($rSeriesID);
+									$rSeriesFile = SERIES_TMP_PATH . 'series_' . $rSeriesID;
+									$rEpisodesFile = SERIES_TMP_PATH . 'episodes_' . $rSeriesID;
+									if (!file_exists($rSeriesFile) || !file_exists($rEpisodesFile)) {
+										continue;
+									}
+									$rSeriesInfo[$rSeriesID] = igbinary_unserialize(file_get_contents($rSeriesFile));
+									$rSeriesData = igbinary_unserialize(file_get_contents($rEpisodesFile));
+									if (!is_array($rSeriesData)) {
+										continue;
+									}
 									foreach ($rSeriesData as $rSeasonID => $rEpisodes) {
 										foreach ($rEpisodes as $rEpisode) {
 											$rSeriesEpisodes[$rEpisode['stream_id']] = array($rSeasonID, $rEpisode['episode_num']);
