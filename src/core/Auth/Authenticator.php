@@ -3,8 +3,9 @@
 class Authenticator {
 	public static function login($db, $rSettings, $rData, $rBypassRecaptcha = false) {
 		if (!empty($rSettings['recaptcha_enable']) && !$rBypassRecaptcha) {
-			$rResponse = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $rSettings['recaptcha_v2_secret_key'] . '&response=' . $rData['g-recaptcha-response']), true);
-			if (!$rResponse['success']) {
+			$rRaw = @file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $rSettings['recaptcha_v2_secret_key'] . '&response=' . $rData['g-recaptcha-response']);
+			$rResponse = ($rRaw !== false) ? json_decode($rRaw, true) : null;
+			if (!is_array($rResponse) || empty($rResponse['success'])) {
 				return array('status' => STATUS_INVALID_CAPTCHA);
 			}
 		}
@@ -49,7 +50,7 @@ class Authenticator {
 			$_SESSION['hash'] = $rUserInfo['id'];
 			$_SESSION['ip'] = $rIP;
 			$_SESSION['code'] = getCurrentCode();
-			$_SESSION['verify'] = md5($rUserInfo['username'] . '||' . $rCrypt);
+			$_SESSION['verify'] = hash('sha256', $rUserInfo['username'] . '||' . $rCrypt);
 
 			if (!empty($rSettings['save_login_logs'])) {
 				$db->query("INSERT INTO `login_logs`(`type`, `access_code`, `user_id`, `status`, `login_ip`, `date`) VALUES('ADMIN', ?, ?, ?, ?, ?);", $rAccessCode['id'], $rUserInfo['id'], 'SUCCESS', $rIP, time());
@@ -69,8 +70,9 @@ class Authenticator {
 
 	public static function resellerLogin($db, $rSettings, $rData) {
 		if (!empty($rSettings['recaptcha_enable'])) {
-			$rResponse = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $rSettings['recaptcha_v2_secret_key'] . '&response=' . $rData['g-recaptcha-response']), true);
-			if (!$rResponse['success']) {
+			$rRaw = @file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $rSettings['recaptcha_v2_secret_key'] . '&response=' . $rData['g-recaptcha-response']);
+			$rResponse = ($rRaw !== false) ? json_decode($rRaw, true) : null;
+			if (!is_array($rResponse) || empty($rResponse['success'])) {
 				return array('status' => STATUS_INVALID_CAPTCHA);
 			}
 		}
@@ -112,7 +114,7 @@ class Authenticator {
 			$_SESSION['reseller'] = $rUserInfo['id'];
 			$_SESSION['rip'] = $rIP;
 			$_SESSION['rcode'] = getCurrentCode();
-			$_SESSION['rverify'] = md5($rUserInfo['username'] . '||' . $rCrypt);
+			$_SESSION['rverify'] = hash('sha256', $rUserInfo['username'] . '||' . $rCrypt);
 
 			if (!empty($rSettings['save_login_logs'])) {
 				$db->query("INSERT INTO `login_logs`(`type`, `access_code`, `user_id`, `status`, `login_ip`, `date`) VALUES('RESELLER', ?, ?, ?, ?, ?);", $rAccessCode['id'], $rUserInfo['id'], 'SUCCESS', $rIP, time());

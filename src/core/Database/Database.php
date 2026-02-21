@@ -59,13 +59,14 @@ class Database {
 			$this->dbh = new PDO('mysql:host=' . $this->dbhost . ';port=' . $this->dbport . ';dbname=' . $this->dbname. ';charset=utf8mb4', $this->dbuser, $this->dbpassword);
 			if (!$this->dbh) {
 				if (!$migrate) {
-					exit(json_encode(array('error' => 'MySQL: Cannot connect to database! Please check credentials.')));
+					exit(json_encode(array('error' => 'Database connection failed. Please contact your administrator.')));
 				}
 
 				return false;
 			}
 		} catch (PDOException $e) {
-			exit(json_encode(array('error' => 'MySQL: ' . $e->getMessage())));
+			error_log('XC_VM database connection error: ' . $e->getMessage());
+			exit(json_encode(array('error' => 'Database connection failed. Please contact your administrator.')));
 		}
 
 		$this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

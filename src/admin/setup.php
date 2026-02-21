@@ -71,7 +71,7 @@ if (!isset(CoreUtilities::$rRequest['update'])):
                     $_SESSION['hash'] = $db->last_insert_id();
                     $_SESSION['ip'] = getIP();
                     $_SESSION['code'] = getCurrentCode();
-                    $_SESSION['verify'] = md5($rArray['username'] . '||' . $rArray['password']);
+                    $_SESSION['verify'] = hash('sha256', $rArray['username'] . '||' . $rArray['password']);
                     $db->query('UPDATE `servers` SET `server_ip` = ? WHERE `is_main` = 1 AND `server_type` = 0 LIMIT 1;', $_SERVER['SERVER_ADDR']);
                     $db->query('UPDATE `settings` SET `live_streaming_pass` = ? WHERE `id` = 1', generateString(25));
 
