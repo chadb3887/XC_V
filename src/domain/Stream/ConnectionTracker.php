@@ -213,7 +213,7 @@ class ConnectionTracker {
 				$rConnectionMap[$rUserIDs[$rGroupID]] = count($rKeys);
 			} else {
 				if (0 < count($rKeys)) {
-					$rRedisKeys = array_merge($rRedisKeys, $rKeys);
+					array_push($rRedisKeys, ...$rKeys);
 				}
 			}
 		}
@@ -242,7 +242,7 @@ class ConnectionTracker {
 				$rConnectionMap[$rServerIDs[$rGroupID]] = count($rKeys);
 			} else {
 				if (0 < count($rKeys)) {
-					$rRedisKeys = array_merge($rRedisKeys, $rKeys);
+					array_push($rRedisKeys, ...$rKeys);
 				}
 			}
 		}
@@ -290,7 +290,7 @@ class ConnectionTracker {
 				$rConnectionMap[$rStreamIDs[$rGroupID]] = count($rKeys);
 			} else {
 				if (0 < count($rKeys)) {
-					$rRedisKeys = array_merge($rRedisKeys, $rKeys);
+					array_push($rRedisKeys, ...$rKeys);
 				}
 			}
 		}
