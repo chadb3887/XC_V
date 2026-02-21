@@ -77,7 +77,7 @@ if (empty(CoreUtilities::$rRequest['username']) && empty(CoreUtilities::$rReques
 
 
 												$_SESSION['phash'] = $rUserInfo['id'];
-												$_SESSION['pverify'] = md5($rUserInfo['username'] . '||' . $rUserInfo['password']);
+												$_SESSION['pverify'] = hash('sha256', $rUserInfo['username'] . '||' . $rUserInfo['password']);
 												header('Location: index.php');
 											} else {
 												$_STATUS = CLIENT_DISALLOWED;

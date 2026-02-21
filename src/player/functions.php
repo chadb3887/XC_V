@@ -22,7 +22,7 @@ if (isset($rSkipVerify) || php_sapi_name() != 'cli') {
 			if (isset($_SESSION['phash'])) {
 				$rUserInfo = CoreUtilities::getUserInfo($_SESSION['phash'], null, null, true);
 
-				if (!(!$rUserInfo || $_SESSION['pverify'] != md5($rUserInfo['username'] . '||' . $rUserInfo['password']) || !is_null($rUserInfo['exp_date']) && $rUserInfo['exp_date'] <= time() || $rUserInfo['admin_enabled'] == 0 || $rUserInfo['enabled'] == 0)) {
+				if (!(!$rUserInfo || $_SESSION['pverify'] != hash('sha256', $rUserInfo['username'] . '||' . $rUserInfo['password']) || !is_null($rUserInfo['exp_date']) && $rUserInfo['exp_date'] <= time() || $rUserInfo['admin_enabled'] == 0 || $rUserInfo['enabled'] == 0)) {
 					sort($rUserInfo['bouquet']);
 				} else {
 					destroySession();
